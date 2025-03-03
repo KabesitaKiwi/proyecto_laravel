@@ -1,170 +1,124 @@
-## Gestionando la traducción.
+Proyecto Laravel: Gestión de Alumnos y Proyectos
 
-1.- Instalo el paquete de laravel
-```bash
-composer requier laravel-lang/lang
-```
-2.- Creo un fichero en config para el listado de idiomas disponibles
+Este proyecto es una aplicación web desarrollada con el framework Laravel, diseñada para gestionar información relacionada con alumnos y proyectos. A continuación, se presenta un paso a paso detallado de cómo se construyó este proyecto.
 
-[fichero config de idiomas](config/languages.php)
+📌 Requisitos Previos
 
-# Creandio un  API
+Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
-1.- instalo el api
-``` bash
-php artisan install:api
-```
+PHP (≥ 8.0)
 
-2.-creamos un controlador para atender los entrypoint
+Composer
 
-```bash
-php artisan make:controller AlumnoApiController
-```
+Node.js (≥ 14)
 
-3.- Creo las rutas
-dentro de routes/api.php
-```php
-Route::apiResource('alumnos', AlumnoApiController::class);
-```
+MySQL o PostgreSQL
 
-4.- creamos los resources para personalizar el contenido del json que vamos a retornar ante las solicitudes.
-```php
-php artisan make:resource AlumnoResource
-php artisan make:resource AlumnoCollection --collection
-```
-5.- Escribimos el contenido 
-En AlumnoResource
-```bash
-<?php
+Laravel
 
-namespace App\Http\Resources;
+⚙️ Paso 1: Creación del Proyecto Laravel
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+Se inició un nuevo proyecto con Laravel ejecutando:
 
-class AlumnoResource extends JsonResource
-{
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return ["data"=>["type"      =>"Alumnos",
-                         "id"        =>(string)$this->id,
-                         "attributes"=>[
-                              "nombre"=>$this->nombre,
-                              "edad"  =>$this->edad,
-                              "email" =>$this->email
-                                      ],
-                         "links"     =>["self"=>"http://localhost:8000/api/alumnos/$this->id"]
+composer create-project laravel/laravel gestion_alumnos_proyectos
+cd gestion_alumnos_proyectos
 
-        ]];
-    }
+🗄️ Paso 2: Configuración de la Base de Datos
+
+Se crearon los modelos y migraciones para Alumno y Proyecto:
+
+php artisan make:model Alumno -m
+php artisan make:model Proyecto -m
+
+Se definieron las estructuras de las tablas en los archivos generados en database/migrations/ y luego se ejecutaron las migraciones:
+
+php artisan migrate
+
+🚀 Paso 3: Creación de Controladores y Rutas
+
+Se generaron los controladores para gestionar alumnos y proyectos:
+
+php artisan make:controller AlumnoController --resource
+php artisan make:controller ProyectoController --resource
+
+Se definieron las rutas necesarias en routes/web.php:
+
+use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\ProyectoController;
+
+Route::resource('alumnos', AlumnoController::class);
+Route::resource('proyectos', ProyectoController::class);
+
+🎨 Paso 4: Creación de Vistas con Blade
+
+Se crearon vistas en resources/views/alumnos/ y resources/views/proyectos/ para mostrar la lista de alumnos y proyectos, formularios de creación y edición, y detalles individuales.
+
+🎨 Paso 5: Estilizado con Tailwind CSS
+
+Se instaló y configuró Tailwind CSS para mejorar la apariencia de la aplicación:
+
+npm install -D tailwindcss
+npx tailwindcss init
+
+Se configuró el archivo tailwind.config.js y se aplicaron estilos en las vistas.
+
+🛠️ Paso 6: Creación de Seeders para Datos de Prueba
+
+Se crearon seeders para poblar la base de datos con alumnos y proyectos de prueba:
+
+php artisan make:seeder AlumnoSeeder
+php artisan make:seeder ProyectoSeeder
+
+Se ejecutaron para insertar datos de prueba:
+
+php artisan db:seed --class=AlumnoSeeder
+php artisan db:seed --class=ProyectoSeeder
+
+🌍 Paso 7: Configuración de Idiomas
+
+Para manejar la traducción en la aplicación, se instaló el paquete laravel-lang/lang:
+
+composer require laravel-lang/lang
+
+Se configuraron los archivos de idioma en lang/.
+
+🏗️ Paso 8: Implementación de Autenticación
+
+Se instaló Laravel Breeze para la autenticación:
+
+composer require laravel/breeze --dev
+php artisan breeze:install
+npm install && npm run dev
+php artisan migrate
+
+Esto agregó autenticación de usuario con login y registro.
+
+🔗 Paso 9: Relación entre Alumnos y Proyectos
+
+Se estableció una relación entre Alumno y Proyecto en los modelos de Laravel:
+
+// Alumno.php
+public function proyectos() {
+    return $this->hasMany(Proyecto::class);
 }
-```
-En AlumnoCollection
-```php
-<?php
 
-namespace App\Http\Resources;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-
-class AlumnoCollection extends ResourceCollection
-{
-    /**
-     * Transform the resource collection into an array.
-     *
-     * @return array<int|string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return    ["data"=>$this->collection];
-    }
-
-    public function with($request){
-        return ["jsonapi"=>[
-            "version"=>"1.0",
-        ]];
-    }
+// Proyecto.php
+public function alumno() {
+    return $this->belongsTo(Alumno::class);
 }
 
-```
-Ahora nos queda atender a excepciones, por ejemplo si la base de datos está caída
-Recogemos la excepción en el fichero bootstrap/app.php
-Observa la línea de exception
-```php
-<?php
+Se modificaron los controladores y las vistas para gestionar esta relación adecuadamente.
 
-use App\Http\Middleware\LanguageMiddleware;
-use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\ValidationHeaderMiddleware;
+🖥️ Paso 10: Despliegue y Pruebas
 
-return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-    )
+Finalmente, se probó la aplicación en el servidor de desarrollo:
 
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(LanguageMiddleware::class);
-        $middleware->api(append: ValidationHeaderMiddleware::class);
-        //
-    })
-    ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(fn(QueryException $e) => response()->json([
-            "status" =>"500", //Cada código
-            "title"  =>"Database fail", //En función del código
-            "details"=>"Access next please"
+php artisan serve
 
-        ])
-        );
-    })->create();
+Se realizaron pruebas manuales y con PHPUnit para validar su funcionamiento.
 
-```
-Igualemnte cuando se realice una solicitud queiro confirmar que en el header esté el elemento de tipo Accept con un valor concreto comdo marca la especificacion Json:API que es (ver apumntes):
-> Accept: application/vnd.api+json
+🎯 Consideraciones Finales
 
-Para ello creamos un middleware
-```bash
- php artisan make:middleware ValidationHeaderMiddleware 
-```
+Este proyecto está estructurado siguiendo las mejores prácticas de Laravel, lo que facilita su escalabilidad y mantenimiento. Se recomienda revisar la documentación oficial de Laravel para profundizar en cada componente y adaptar la aplicación a necesidades específicas.
 
-En el middeleware escribimos el siguiente código
-
-```php
-<?php
-
-namespace App\Http\Middleware;
-
-use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-class ValidationHeaderMiddleware
-{
-    /**
-     * Handle an incoming request.
-     *
-     * @param Closure(Request): (Response) $next
-     */
-    public function handle(Request $request, Closure $next): Response
-    {
-        if ($request->headers->get('Accept') !== 'application/vnd.api+json') {
-            return response()->json(['status'=>406,
-                                     "title" =>"Not Acceptable",
-                                     "datail"=>" Accept not correct in header"], 406);
-        }
-        return $next($request);
-    }
-}
-```
-Observa cómo hemos asociado este middleware a las rutas que tengamos en el fichero api.php. Esto se hace en bootstrap/app.php cuyo contenido está mostrado anteriormente.
+Para cualquier consulta o contribución, no dude en contactar al mantenedor del proyecto o abrir una incidencia en el repositorio.
