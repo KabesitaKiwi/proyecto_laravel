@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController2;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\ProyectoController;
 
 
 Route::get("main", MainController::class);
@@ -27,3 +28,5 @@ Route::middleware('auth')->group(function () {
 });
 Route::get("language/{locale}", LanguageController::class)->name('language');
 require __DIR__.'/auth.php';
+
+Route::resource('proyectos', ProyectoController::class);
