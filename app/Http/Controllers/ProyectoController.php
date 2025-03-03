@@ -38,10 +38,12 @@ class ProyectoController extends Controller
             'fecha_de_comienzo' => 'required|date',
         ]);
 
-        Proyecto::create($request->all());
 
+        //crea el proyecto
+        Proyecto::create($request->all());
+        //mensaje de exito
         return redirect()->route('proyectos.index')
-            ->with('success', 'El proyecto ha sido creado correctamente.');
+            ->with('mensaje', 'El proyecto ha sido creado correctamente.');
     }
 
     /**
@@ -56,7 +58,7 @@ class ProyectoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Proyecto $proyecto)
     {
         return view('proyectos.edit', compact('proyecto'));
     }
@@ -71,11 +73,10 @@ class ProyectoController extends Controller
             'horas_previstas' => 'required|integer|min:1',
             'fecha_de_comienzo' => 'required|date',
         ]);
-
+        //actualiza el proyecto
         $proyecto->update($request->all());
-
-        return redirect()->route('proyectos.index')
-            ->with('success', 'El proyecto ha sido actualizado con éxito.');
+        //devuelve un mensaje de correcto
+        return redirect()->route('proyectos.index')->with('mensaje', 'El proyecto ha sido actualizado con éxito.');
     }
 
 
@@ -86,7 +87,6 @@ class ProyectoController extends Controller
     {
         $proyecto->delete();
 
-        return redirect()->route('proyectos.index')
-            ->with('success', 'El proyecto ha sido eliminado correctamente.');
+        return redirect()->route('proyectos.index')->with('mensaje', 'El proyecto ha sido eliminado correctamente.');
     }
 }
