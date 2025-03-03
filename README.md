@@ -2,7 +2,7 @@ Proyecto Laravel: Gestión de Alumnos y Proyectos
 
 Este proyecto es una aplicación web desarrollada con el framework Laravel, diseñada para gestionar información relacionada con alumnos y proyectos. A continuación, se presenta un paso a paso detallado de cómo se construyó este proyecto.
 
-📌 Requisitos Previos
+ Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
@@ -16,14 +16,14 @@ MySQL o PostgreSQL
 
 Laravel
 
-⚙️ Paso 1: Creación del Proyecto Laravel
+ Paso 1: Creación del Proyecto Laravel
 
 Se inició un nuevo proyecto con Laravel ejecutando:
 
 composer create-project laravel/laravel gestion_alumnos_proyectos
 cd gestion_alumnos_proyectos
 
-🗄️ Paso 2: Configuración de la Base de Datos
+ Paso 2: Configuración de la Base de Datos
 
 Se crearon los modelos y migraciones para Alumno y Proyecto:
 
@@ -34,7 +34,7 @@ Se definieron las estructuras de las tablas en los archivos generados en databas
 
 php artisan migrate
 
-🚀 Paso 3: Creación de Controladores y Rutas
+ Paso 3: Creación de Controladores y Rutas
 
 Se generaron los controladores para gestionar alumnos y proyectos:
 
@@ -49,11 +49,11 @@ use App\Http\Controllers\ProyectoController;
 Route::resource('alumnos', AlumnoController::class);
 Route::resource('proyectos', ProyectoController::class);
 
-🎨 Paso 4: Creación de Vistas con Blade
+ Paso 4: Creación de Vistas con Blade
 
 Se crearon vistas en resources/views/alumnos/ y resources/views/proyectos/ para mostrar la lista de alumnos y proyectos, formularios de creación y edición, y detalles individuales.
 
-🎨 Paso 5: Estilizado con Tailwind CSS
+ Paso 5: Estilizado con Tailwind CSS
 
 Se instaló y configuró Tailwind CSS para mejorar la apariencia de la aplicación:
 
@@ -62,7 +62,7 @@ npx tailwindcss init
 
 Se configuró el archivo tailwind.config.js y se aplicaron estilos en las vistas.
 
-🛠️ Paso 6: Creación de Seeders para Datos de Prueba
+ Paso 6: Creación de Seeders para Datos de Prueba
 
 Se crearon seeders para poblar la base de datos con alumnos y proyectos de prueba:
 
@@ -74,7 +74,7 @@ Se ejecutaron para insertar datos de prueba:
 php artisan db:seed --class=AlumnoSeeder
 php artisan db:seed --class=ProyectoSeeder
 
-🌍 Paso 7: Configuración de Idiomas
+ Paso 7: Configuración de Idiomas
 
 Para manejar la traducción en la aplicación, se instaló el paquete laravel-lang/lang:
 
@@ -82,7 +82,7 @@ composer require laravel-lang/lang
 
 Se configuraron los archivos de idioma en lang/.
 
-🏗️ Paso 8: Implementación de Autenticación
+ Paso 8: Implementación de Autenticación
 
 Se instaló Laravel Breeze para la autenticación:
 
@@ -109,7 +109,7 @@ public function alumno() {
 
 Se modificaron los controladores y las vistas para gestionar esta relación adecuadamente.
 
-🖥️ Paso 10: Despliegue y Pruebas
+ Paso 10: Despliegue y Pruebas
 
 Finalmente, se probó la aplicación en el servidor de desarrollo:
 
@@ -117,8 +117,3 @@ php artisan serve
 
 Se realizaron pruebas manuales y con PHPUnit para validar su funcionamiento.
 
-🎯 Consideraciones Finales
-
-Este proyecto está estructurado siguiendo las mejores prácticas de Laravel, lo que facilita su escalabilidad y mantenimiento. Se recomienda revisar la documentación oficial de Laravel para profundizar en cada componente y adaptar la aplicación a necesidades específicas.
-
-Para cualquier consulta o contribución, no dude en contactar al mantenedor del proyecto o abrir una incidencia en el repositorio.
